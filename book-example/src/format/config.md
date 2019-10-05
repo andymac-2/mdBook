@@ -179,6 +179,7 @@ Available configuration options for the `[output.html.playpen]` table:
 - **editable:** Allow editing the source code. Defaults to `false`.
 - **copy-js:** Copy JavaScript files for the editor to the output directory.
   Defaults to `true`.
+- **line-numbers** Display line numbers on editable sections of code. Requires both `editable` and `copy-js` to be `true`. Defaults to `false`.
 
 [Ace]: https://ace.c9.io/
 
@@ -189,7 +190,7 @@ Available configuration options for the `[output.html.search]` table:
 - **teaser-word-count:** The number of words used for a search result teaser.
   Defaults to `30`.
 - **use-boolean-and:** Define the logical link between multiple search words. If
-  true, all search words must appear in each result. Defaults to `true`.
+  true, all search words must appear in each result. Defaults to `false`.
 - **boost-title:** Boost factor for the search result score if a search word
   appears in the header. Defaults to `2`.
 - **boost-hierarchy:** Boost factor for the search result score if a search word
@@ -228,6 +229,7 @@ git-repository-icon = "fa-github"
 [output.html.playpen]
 editable = false
 copy-js = true
+line-numbers = false
 
 [output.html.search]
 enable = true

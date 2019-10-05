@@ -62,6 +62,7 @@ use toml_query::insert::TomlValueInsertExt;
 use toml_query::read::TomlValueReadExt;
 
 use crate::errors::*;
+use crate::utils;
 
 /// The overall configuration object for MDBook, essentially an in-memory
 /// representation of `book.toml`.
@@ -168,7 +169,13 @@ impl Config {
     /// HTML renderer is refactored to be less coupled to `mdbook` internals.
     #[doc(hidden)]
     pub fn html_config(&self) -> Option<HtmlConfig> {
-        self.get_deserialized("output.html").ok()
+        match self.get_deserialized("output.html") {
+            Ok(config) => Some(config),
+            Err(e) => {
+                utils::log_backtrace(&e.chain_err(|| "Parsing configuration [output.html]"));
+                None
+            }
+        }
     }
 
     /// Convenience function to fetch a value from the config and deserialize it
@@ -472,6 +479,8 @@ pub struct Playpen {
     /// Copy JavaScript files for the editor to the output directory?
     /// Default: `true`.
     pub copy_js: bool,
+    /// Display line numbers on playpen snippets
+    pub line_numbers: bool,
 }
 
 impl Default for Playpen {
@@ -479,6 +488,7 @@ impl Default for Playpen {
         Playpen {
             editable: false,
             copy_js: true,
+            line_numbers: false,
         }
     }
 }
@@ -494,7 +504,7 @@ pub struct Search {
     /// The number of words used for a search result teaser. Default: `30`.
     pub teaser_word_count: u32,
     /// Define the logical link between multiple search words.
-    /// If true, all search words must appear in each result. Default: `true`.
+    /// If true, all search words must appear in each result. Default: `false`.
     pub use_boolean_and: bool,
     /// Boost factor for the search result score if a search word appears in the header.
     /// Default: `2`.
@@ -613,6 +623,7 @@ mod tests {
         let playpen_should_be = Playpen {
             editable: true,
             copy_js: true,
+            line_numbers: false,
         };
         let html_should_be = HtmlConfig {
             curly_quotes: true,
